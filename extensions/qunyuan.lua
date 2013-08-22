@@ -43,18 +43,18 @@ EOSCard=sgs.CreateSkillCard{
 
 		if(choice == "fangju")then
 			if(effect.to:getArmor())then
-				room:moveCardTo(self, effect.to, sgs.Player_Hand, false)
-				room:moveCardTo(effect.to:getEquip(1), effect.from, sgs.Player_Hand)
+				room:moveCardTo(self, effect.to, sgs.Player_PlaceHand, false)
+				room:moveCardTo(effect.to:getEquip(1), effect.from, sgs.Player_PlaceHand)
 			end
 		elseif(choice == "fangyuma")then
 			if(effect.to:getDefensiveHorse())then
-				room:moveCardTo(self, effect.to, sgs.Player_Hand, false)
-				room:moveCardTo(effect.to:getEquip(2), effect.from, sgs.Player_Hand)
+				room:moveCardTo(self, effect.to, sgs.Player_PlaceHand, false)
+				room:moveCardTo(effect.to:getEquip(2), effect.from, sgs.Player_PlaceHand)
 			end
 		else
 			if(effect.to:getOffensiveHorse())then
-				room:moveCardTo(self, effect.to, sgs.Player_Hand, false)
-				room:moveCardTo(effect.to:getEquip(3), effect.from, sgs.Player_Hand)
+				room:moveCardTo(self, effect.to, sgs.Player_PlaceHand, false)
+				room:moveCardTo(effect.to:getEquip(3), effect.from, sgs.Player_PlaceHand)
 			end
 		end
 		room:setPlayerFlag(effect.from, "EOS-used")
@@ -76,7 +76,7 @@ EOS=sgs.CreateViewAsSkill{
         return not sgs.Self:hasFlag("EOS-used")
     end,
 	view_filter = function(self, selected, to_select)
-        return to_select:inherits("EquipCard")
+        return to_select:isKindOf("EquipCard")
 		--return true
     end,
 	view_as=function(self, cards)
