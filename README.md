@@ -11,3 +11,5 @@ V1: based on https://github.com/Moligaloo/QSanguosha
 V2: based on https://github.com/Paracel/QSanguosha-Para
 
 master branch synchronized with v2
+
+For Document Reference https://github.com/DGAH/LuaSkillsForQSGS 
