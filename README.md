@@ -9,3 +9,7 @@ Lua Package for an opensource game QSanguosha
 V1 - 金蛇版（0221法海补丁）：http://pan.baidu.com/share/link?shareid=293343&uk=1594112476
 
 V2 - 0端午序曲(0610补丁): http://pan.baidu.com/share/link?shareid=1923667909&uk=1442992357
+
+
+群员包加入方法：
+点击右方Download ZIP按钮，然后将解压后的extensions, audio, image三个文件夹放在三国杀本体根目录下即可。如不需要配音和图只需移动extensions文件夹即可
