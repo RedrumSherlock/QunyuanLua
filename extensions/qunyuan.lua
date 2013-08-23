@@ -126,7 +126,7 @@ yiqiCard=sgs.CreateSkillCard{
 		
 		room:showCard(effect.to, show_card:getEffectiveId())
 		if(show_card:inherits("TrickCard"))then
-			local give_card = room:askForCard(effect.from, ".trick", "@yiqi")
+			local give_card = room:askForCard(effect.from, "TrickCard", "@yiqi")
 			if(give_card~=nil) then
 				effect.to:obtainCard(give_card)
 			else
@@ -147,6 +147,7 @@ yiqi=sgs.CreateViewAsSkill{
 	view_as=function(self, cards)
         local card=yiqiCard:clone()
 		card:setSkillName(self:objectName())
+		return card
 	end
 }
 --添加技能
