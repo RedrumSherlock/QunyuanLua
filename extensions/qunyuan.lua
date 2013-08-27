@@ -4,7 +4,7 @@ extension=sgs.Package("qunyuan")
 --武将定义
 jinteng=sgs.General(extension,"jinteng","wu",4,true)--近藤
 huanying=sgs.General(extension,"huanying","shu",3,false)--幻樱
---OneFourFour=sgs.General(extension,"OneFourFour$","wu",4,true)--144
+onefourfour=sgs.General(extension,"onefourfour","wu",4,true)--144
 --BuZhi=sgs.General(extension,"BuZhi","wei",4,true)--不知
 --WenDe=sgs.General(extension,"WenDe","wu",4,true)--文德
 --LanDao=sgs.General(extension,"LanDao","wu",4,true)--蓝刀
@@ -81,7 +81,7 @@ EOS=sgs.CreateViewAsSkill{
 	end
 }
 
-
+--抚琴
 fuqin = sgs.CreateTriggerSkill{
 	name = "fuqin",
     events = {sgs.PhaseChange, sgs.CardLost},
@@ -106,6 +106,7 @@ fuqin = sgs.CreateTriggerSkill{
     end
 }
 
+--弈棋
 yiqiCard=sgs.CreateSkillCard{
 	name="yiqi",
 	once = true,
@@ -150,10 +151,69 @@ yiqi=sgs.CreateViewAsSkill{
 		return card
 	end
 }
+
+zhongguo = sgs.CreateTriggerSkill{
+	name = "zhongguo",
+	priority = 2,
+    events = {sgs.SlashMissed},
+	
+	on_trigger = function(self, event, player, data)
+		local room = player:getRoom()
+		room:drawCards(player, 1)
+		local effect = data:toSlashEffect()
+        if(not player:isNude() and not player:getWeapon()) then
+			if(player:askForSkillInvoke("zhongguo"))then
+                local card = room:askForCard(player, ".|.|.|.", "@zhongguo")
+				room:throwCard(card)
+				room:slashResult(effect, nil)
+            end
+        end
+		return false
+    end
+}
+
+chongqi_card = sgs.CreateSkillCard{
+    name = "chongqi",
+    target_fixed = true,
+    will_throw = true,
+    
+    on_use = function(self, room, source, targets)
+        if(source:isAlive()) then
+            room:drawCards(source, 1)
+            room:throwCard(self)
+        end
+    end
+}
+
+chongqi = sgs.CreateViewAsSkill{
+	name = "chongqi",
+	n = 1,
+	
+    enabled_at_play = function()
+        return true
+    end,
+	
+	view_filter = function(self, selected, to_select)
+        return to_select:inherits("EquipCard")
+    end,
+	
+	view_as = function(self, cards)
+        if #cards > 0 then
+            local new_card = chongqi_card:clone()
+            local card = cards[1]
+            new_card:addSubcard(card:getId())
+            new_card:setSkillName("chongqi")
+            return new_card
+        else return nil
+        end
+    end
+}
 --添加技能
 jinteng:addSkill(EOS)
 huanying:addSkill(fuqin)
 huanying:addSkill(yiqi)
+onefourfour:addSkill(zhongguo)
+onefourfour:addSkill(chongqi)
 --翻译
 sgs.LoadTranslationTable{
 	["qunyuan"]="群员",
