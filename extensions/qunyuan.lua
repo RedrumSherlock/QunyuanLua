@@ -5,7 +5,7 @@ extension=sgs.Package("qunyuan")
 jinteng=sgs.General(extension,"jinteng","wu",4,true)--近藤
 huanying=sgs.General(extension,"huanying","shu",3,false)--幻樱
 onefourfour=sgs.General(extension,"onefourfour","wu",4,true)--144
---BuZhi=sgs.General(extension,"BuZhi","wei",4,true)--不知
+buzhi=sgs.General(extension,"buzhi","wei",4,true)--不知
 --WenDe=sgs.General(extension,"WenDe","wu",4,true)--文德
 --LanDao=sgs.General(extension,"LanDao","wu",4,true)--蓝刀
 --技能定义
@@ -151,7 +151,7 @@ yiqi=sgs.CreateViewAsSkill{
 		return card
 	end
 }
-
+--中国
 zhongguo = sgs.CreateTriggerSkill{
 	name = "zhongguo",
 	priority = 2,
@@ -159,7 +159,6 @@ zhongguo = sgs.CreateTriggerSkill{
 	
 	on_trigger = function(self, event, player, data)
 		local room = player:getRoom()
-		room:drawCards(player, 1)
 		local effect = data:toSlashEffect()
         if(not player:isNude() and not player:getWeapon()) then
 			if(player:askForSkillInvoke("zhongguo"))then
@@ -171,7 +170,7 @@ zhongguo = sgs.CreateTriggerSkill{
 		return false
     end
 }
-
+--重启
 chongqi_card = sgs.CreateSkillCard{
     name = "chongqi",
     target_fixed = true,
@@ -208,12 +207,66 @@ chongqi = sgs.CreateViewAsSkill{
         end
     end
 }
+
+--求爱
+qiuaiCard = sgs.CreateSkillCard{
+	name = "qiuaiCard",
+	target_fixed = true,
+	will_throw = true,
+	filter = function(self, targets, to_select)
+		return true
+	end,
+	on_effect = function(self, effect)
+	end
+}
+qiuaiVS = sgs.CreateViewAsSkill{
+	name = "qiuai", 
+	n = 1, 
+	view_filter = function(self, selected, to_select)
+		return to_select:inherits("Peach") or to_select:inherits("Analeptic")
+	end, 
+	view_as = function(self, cards) 
+		if #cards == 1 then
+			local card = qiuaiCard:clone()
+			card:addSubcard(cards[1])
+			return card
+		end
+	end, 
+	enabled_at_play = function(self, player)
+		return true
+	end, 
+	enabled_at_response = function(self, player, pattern)
+		return pattern == "@@qiuai"
+	end
+}
+qiuai = sgs.CreateTriggerSkill{
+	name = "qiuai",
+    events = {sgs.Predamage},
+	view_as_skill = qiuaiVS, 
+	
+	on_trigger = function(self, event, player, data)
+		local damage = data:toDamage()
+		local room = player:getRoom()
+		if( damage.card:inherits("Slash") and damage.from:objectName() == player:objectName() and not player:isKongcheng())then
+			if(room:askForSkillInvoke(player, "qiuai", data)) then
+				local card = room:askForCard(player, "@@qiuai", "@qiuai")
+				if(card~=nil)then
+					room:throwCard(card)
+					damage.damage = damage.damage + 1
+					data:setValue(damage)
+				end
+			end
+        end
+		return false
+    end
+}
 --添加技能
 jinteng:addSkill(EOS)
 huanying:addSkill(fuqin)
 huanying:addSkill(yiqi)
 onefourfour:addSkill(zhongguo)
 onefourfour:addSkill(chongqi)
+buzhi:addSkill(qiuai)
 --翻译
 sgs.LoadTranslationTable{
 	["qunyuan"]="群员",
